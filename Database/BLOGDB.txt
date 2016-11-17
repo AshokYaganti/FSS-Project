@@ -1,0 +1,974 @@
+create table userdetails
+(fname varchar(50),
+lname varchar(50),
+username varchar(50) primary key,
+password varchar(20),
+emailid varchar(50),
+age int,
+phno varchar(50))
+
+......................................................................................................................................1
+
+create  procedure sp_userdetails
+(@fname varchar(50),
+@lname varchar(50),
+@username varchar(50),
+@password varchar(20),
+@emailid varchar(50),
+@age int, 
+@phno varchar(50))
+as
+begin
+insert into userdetails values(@fname,@lname,@username,@password,@emailid,@age,@phno)
+end
+
+......................................................................................................................................2
+
+create procedure sp_username
+as
+begin
+select username from userdetails
+end
+
+......................................................................................................................................3
+
+
+create procedure sp_logindetails
+(@username varchar(50))
+as
+begin
+select username,password from userdetails where username=@username;
+end
+
+......................................................................................................................................4
+create table userimage
+(id varchar(20),
+img image,
+date1 datetime)
+
+.......................................................................................................................................5
+
+create procedure sp_userimage
+(@id varchar(20),
+@photo image,
+@date1 datetime)
+as 
+begin
+insert into userimage values(@id,@photo,@date1)
+delete userimage where id=@id and date1<@date1
+end
+
+.......................................................................................................................................6
+
+create table postdetails
+(
+postid int primary key identity(1,1), 
+username varchar(50),
+title varchar(500),
+post nvarchar(max),
+date1 datetime,
+foreign key(username) references userdetails(username))
+
+........................................................................................................................................7
+
+alter  procedure sp_postdetails
+(@username varchar(50),
+@title varchar(500),
+@post nvarchar(max),
+@date1 datetime,
+@postid int output)
+as
+begin
+insert into postdetails values(@username,@title,@post,@date1)
+SET @postid=SCOPE_IDENTITY()
+RETURN @postid
+end
+
+...........................................................................................................................................8
+
+
+create table tag
+(tagid int primary key identity(1,1),
+tagname varchar(50), 
+postid int,
+foreign key(postid) references postdetails(postid))
+
+............................................................................................................................................9
+
+create procedure sp_tag
+(@tagname varchar(50),
+@postid int,
+@tagid int output)
+as
+begin
+insert into tag values(@tagname,@postid)
+SET @tagid=SCOPE_IDENTITY()
+RETURN @tagid
+end
+
+...........................................................................................................................................10
+
+alter procedure sp_getpostdetails
+as
+begin
+select p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username
+end
+............................................................................................................................................11
+
+create procedure sp_getpostmessage
+(@postid varchar(100))
+as
+begin
+select post from postdetails where postid=@postid
+end
+
+..........................................................................................................................................10
+...
+create procedure sp_getpost
+@postid number(10))
+as
+begin
+select title,post,post_date from blog_post where post_id=@post_id
+end
+
+..........................................................................................................................................11
+
+alter procedure sp_tags
+as
+begin
+select t.postid,tagname from postdetails p, tag t where p.postid=t.postid
+end
+
+...........................................................................................................................................12
+
+create table comment_box
+(commentid int primary key identity(1,1),
+postid int,
+username varchar(50),
+comment nvarchar(max),
+date datetime,
+foreign key(postid) references postdetails(postid),
+foreign key(username) references userdetails(username))
+
+...........................................................................................................................................13
+
+create procedure sp_comments
+(@postid int,
+@username varchar(50),
+@comment nvarchar(max),
+@date datetime,
+@commentid int output)
+As
+begin
+insert into comment_box values(@postid,@username,@comment,@date)
+SET @commentid=SCOPE_IDENTITY()
+RETURN @commentid
+End
+
+...........................................................................................................................................14
+
+alter procedure sp_getcomments
+(@postid int)
+as
+begin
+select u.fname+' '+u.lname as name,comment,date from comment_box c,userdetails u where postid=@postid and u.username=c.username
+end
+
+............................................................................................................................................15
+
+
+alter procedure sp_authorsearch
+(@author varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and u.fname like '%'+@author+'%' or u.lname like '%'+@author+'%'
+end
+
+......................................................................................................................................................16
+
+alter procedure sp_titlesearch
+(@title varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and p.title like '%'+@title+'%' 
+end
+........................................................................................................................................................17
+
+alter procedure sp_tagsearch
+(@tag varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,t.tagname,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and p.postid=t.postid and t.tagname like '%'+@tag+'%' 
+end
+
+...........................................................................................................................................................18
+
+alter procedure sp_postsearch
+(@post varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and p.post like '%'+@post+'%' 
+end
+
+...............................................................................................................................................................19
+
+alter procedure sp_author_tag_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and p.postid=t.postid and t.tagname like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%' 
+end
+
+...................................................................................................................................................................20
+
+alter procedure sp_author_title_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and p.title like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%' 
+end
+
+...................................................................................................................................................................21
+
+alter procedure sp_author_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and p.post like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%' 
+end
+
+.....................................................................................................................................................................22
+
+alter procedure sp_tag_title_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and p.postid=t.postid and p.title like '%'+@text+'%' or t.tagname like '%'+@text+'%'  
+end
+
+......................................................................................................................................................................23
+
+alter procedure sp_tag_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and p.postid=t.postid and p.post like '%'+@text+'%' or t.tagname like '%'+@text+'%'  
+end
+
+......................................................................................................................................................................24
+
+alter procedure sp_title_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and p.post like '%'+@text+'%' or p.title like '%'+@text+'%'  
+end
+
+.......................................................................................................................................................................25
+
+alter procedure sp_author_tag_title_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and t.postid=p.postid and p.title like '%'+@text+'%' or t.tagname like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%' 
+end
+
+......................................................................................................................................................................26
+
+alter procedure sp_author_title_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p where p.username=u.username and p.title like '%'+@text+'%' or p.post like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%' 
+end
+
+.........................................................................................................................................................................27
+
+alter procedure sp_author_tag_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and t.postid=p.postid and t.tagname like '%'+@text+'%' or p.post like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%' 
+end
+
+..........................................................................................................................................................................28
+
+alter procedure sp_tag_tilte_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and t.postid=p.postid and t.tagname like '%'+@text+'%' or p.post like '%'+@text+'%' or p.title like '%'+@text+'%' 
+end
+
+.........................................................................................................................................................................29
+
+alter procedure sp_author_tag_title_post_search
+(@text varchar(500))
+as
+begin
+select distinct p.postid,p.post,fname+' '+u.lname as name,p.title,p.date1 from userdetails u,postdetails p,tag t where p.username=u.username and t.postid=p.postid and t.tagname like '%'+@text+'%' or p.post like '%'+@text+'%' or p.title like '%'+@text+'%' or u.fname like '%'+@text+'%' or u.lname like '%'+@text+'%'
+end
+........................................................................................................................................................................30
+
+
+create table responsetime10000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+............................................................................................................................................31
+
+create table responsetime100000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+
+...........................................................................................................................................32
+
+create table responsetime200000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+..........................................................................................................................................33
+
+
+create table responsetime300000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+..........................................................................................................................................34
+
+create table responsetime400000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+..........................................................................................................................................35
+
+create table responsetime500000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+..........................................................................................................................................36
+
+create table responsetime600000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+
+..........................................................................................................................................37
+
+create table responsetime700000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+..........................................................................................................................................38
+
+create table responsetime800000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+..........................................................................................................................................39
+
+create table responsetime900000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+.........................................................................................................................................40
+
+create table responsetime1000000
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+.........................................................................................................................................41
+
+create procedure sp_responsetime_sql10000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime10000 set restimesql=@restimesql where id=@id
+end
+
+.........................................................................................................................................42
+
+
+create procedure sp_responsetime_mongo10000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime10000 set restimemongo=@restimemongo where id=@id
+end
+
+.........................................................................................................................................43
+
+create procedure sp_responsetime_sql100000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime100000 set restimesql=@restimesql where id=@id
+end
+
+.........................................................................................................................................44
+
+create procedure sp_responsetime_mongo100000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime100000 set restimemongo=@restimemongo where id=@id
+end
+
+........................................................................................................................................45
+
+create procedure sp_responsetime_sql200000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime200000 set restimesql=@restimesql where id=@id
+end
+
+........................................................................................................................................46
+
+
+create procedure sp_responsetime_mongo200000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime200000 set restimemongo=@restimemongo where id=@id
+end
+
+.......................................................................................................................................47
+
+
+create procedure sp_responsetime_sql300000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime300000 set restimesql=@restimesql where id=@id
+end
+
+.......................................................................................................................................48
+
+
+create procedure sp_responsetime_mongo300000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime300000 set restimemongo=@restimemongo where id=@id
+end
+
+.......................................................................................................................................49
+
+
+create procedure sp_responsetime_sql400000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime400000 set restimesql=@restimesql where id=@id
+end
+
+......................................................................................................................................50
+
+
+create procedure sp_responsetime_mongo400000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime400000 set restimemongo=@restimemongo where id=@id
+end
+
+......................................................................................................................................51
+
+
+create procedure sp_responsetime_sql500000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime500000 set restimesql=@restimesql where id=@id
+end
+
+.....................................................................................................................................52
+
+
+create procedure sp_responsetime_mongo500000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime500000 set restimemongo=@restimemongo where id=@id
+end
+
+.....................................................................................................................................53
+
+
+create procedure sp_responsetime_sql600000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime600000 set restimesql=@restimesql where id=@id
+end
+
+......................................................................................................................................54
+
+create procedure sp_responsetime_mongo600000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime600000 set restimemongo=@restimemongo where id=@id
+end
+
+.......................................................................................................................................55
+
+
+create procedure sp_responsetime_sql700000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime700000 set restimesql=@restimesql where id=@id
+end
+
+......................................................................................................................................56
+
+
+create procedure sp_responsetime_mongo700000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime700000 set restimemongo=@restimemongo where id=@id
+end
+
+.....................................................................................................................................57
+
+
+create procedure sp_responsetime_sql800000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime800000 set restimesql=@restimesql where id=@id
+end
+
+.....................................................................................................................................58
+
+
+create procedure sp_responsetime_mongo800000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime800000 set restimemongo=@restimemongo where id=@id
+end
+
+......................................................................................................................................59
+
+
+create procedure sp_responsetime_sql900000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime900000 set restimesql=@restimesql where id=@id
+end
+
+.....................................................................................................................................60
+
+
+create procedure sp_responsetime_mongo900000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime900000 set restimemongo=@restimemongo where id=@id
+end
+
+.....................................................................................................................................61
+
+
+create procedure sp_responsetime_sql1000000
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetime1000000 set restimesql=@restimesql where id=@id
+end
+
+......................................................................................................................................62
+
+
+create procedure sp_responsetime_mongo1000000
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetime1000000 set restimemongo=@restimemongo where id=@id
+end
+
+.......................................................................................................................................63
+
+
+create procedure sp_getresponsetime10000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime10000
+end
+
+.........................................................................................................................................64
+
+create procedure sp_getresponsetime100000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime100000
+end
+
+........................................................................................................................................65
+
+
+alter procedure sp_getresponsetime200000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime200000
+end
+
+.........................................................................................................................................66
+
+alter procedure sp_getresponsetime300000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime300000
+end
+
+.........................................................................................................................................67
+
+alter procedure sp_getresponsetime400000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime400000
+end
+
+.........................................................................................................................................68
+
+
+alter procedure sp_getresponsetime500000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime500000
+end
+
+..........................................................................................................................................69
+
+
+create procedure sp_getresponsetime600000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime600000
+end
+
+..........................................................................................................................................70
+
+create procedure sp_getresponsetime700000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime700000
+end
+
+..........................................................................................................................................71
+
+
+create procedure sp_getresponsetime800000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime800000
+end
+
+..........................................................................................................................................72
+
+
+create procedure sp_getresponsetime900000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime900000
+end
+
+............................................................................................................................................73
+
+
+create procedure sp_getresponsetime1000000
+as
+begin
+select serchtype,restimesql,restimemongo from responsetime1000000
+end
+
+............................................................................................................................................74
+
+insert into responsetime10000 values('1','author',0.0,0.0);
+insert into responsetime10000 values('2','tag',0.0,0.0);
+insert into responsetime10000 values('3','title',0.0,0.0);
+insert into responsetime10000 values('4','post',0.0,0.0);
+insert into responsetime10000 values('5','author_tag',0.0,0.0);
+insert into responsetime10000 values('6','author_title',0.0,0.0);
+insert into responsetime10000 values('7','author_post',0.0,0.0);
+insert into responsetime10000 values('8','tag_title',0.0,0.0);
+insert into responsetime10000 values('9','tag_post',0.0,0.0);
+insert into responsetime10000 values('10','title_post',0.0,0.0);
+insert into responsetime10000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime10000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime10000 values('13','author_title_post',0.0,0.0);
+insert into responsetime10000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime10000 values('15','author_tag_title_post',0.0,0.0);
+
+............................................................................................................................................75
+
+insert into responsetime100000 values('1','author',0.0,0.0);
+insert into responsetime100000 values('2','tag',0.0,0.0);
+insert into responsetime100000 values('3','title',0.0,0.0);
+insert into responsetime100000 values('4','post',0.0,0.0);
+insert into responsetime100000 values('5','author_tag',0.0,0.0);
+insert into responsetime100000 values('6','author_title',0.0,0.0);
+insert into responsetime100000 values('7','author_post',0.0,0.0);
+insert into responsetime100000 values('8','tag_title',0.0,0.0);
+insert into responsetime100000 values('9','tag_post',0.0,0.0);
+insert into responsetime100000 values('10','title_post',0.0,0.0);
+insert into responsetime100000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime100000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime100000 values('13','author_title_post',0.0,0.0);
+insert into responsetime100000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime100000 values('15','author_tag_title_post',0.0,0.0);
+
+
+............................................................................................................................................76
+
+insert into responsetime200000 values('1','author',0.0,0.0);
+insert into responsetime200000 values('2','tag',0.0,0.0);
+insert into responsetime200000 values('3','title',0.0,0.0);
+insert into responsetime200000 values('4','post',0.0,0.0);
+insert into responsetime200000 values('5','author_tag',0.0,0.0);
+insert into responsetime200000 values('6','author_title',0.0,0.0);
+insert into responsetime200000 values('7','author_post',0.0,0.0);
+insert into responsetime200000 values('8','tag_title',0.0,0.0);
+insert into responsetime200000 values('9','tag_post',0.0,0.0);
+insert into responsetime200000 values('10','title_post',0.0,0.0);
+insert into responsetime200000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime200000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime200000 values('13','author_title_post',0.0,0.0);
+insert into responsetime200000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime200000 values('15','author_tag_title_post',0.0,0.0);
+
+...........................................................................................................................................77
+
+insert into responsetime300000 values('1','author',0.0,0.0);
+insert into responsetime300000 values('2','tag',0.0,0.0);
+insert into responsetime300000 values('3','title',0.0,0.0);
+insert into responsetime300000 values('4','post',0.0,0.0);
+insert into responsetime300000 values('5','author_tag',0.0,0.0);
+insert into responsetime300000 values('6','author_title',0.0,0.0);
+insert into responsetime300000 values('7','author_post',0.0,0.0);
+insert into responsetime300000 values('8','tag_title',0.0,0.0);
+insert into responsetime300000 values('9','tag_post',0.0,0.0);
+insert into responsetime300000 values('10','title_post',0.0,0.0);
+insert into responsetime300000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime300000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime300000 values('13','author_title_post',0.0,0.0);
+insert into responsetime300000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime300000 values('15','author_tag_title_post',0.0,0.0);
+
+...........................................................................................................................................78
+
+insert into responsetime400000 values('1','author',0.0,0.0);
+insert into responsetime400000 values('2','tag',0.0,0.0);
+insert into responsetime400000 values('3','title',0.0,0.0);
+insert into responsetime400000 values('4','post',0.0,0.0);
+insert into responsetime400000 values('5','author_tag',0.0,0.0);
+insert into responsetime400000 values('6','author_title',0.0,0.0);
+insert into responsetime400000 values('7','author_post',0.0,0.0);
+insert into responsetime400000 values('8','tag_title',0.0,0.0);
+insert into responsetime400000 values('9','tag_post',0.0,0.0);
+insert into responsetime400000 values('10','title_post',0.0,0.0);
+insert into responsetime400000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime400000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime400000 values('13','author_title_post',0.0,0.0);
+insert into responsetime400000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime400000 values('15','author_tag_title_post',0.0,0.0);
+
+.........................................................................................................................................79
+
+
+insert into responsetime500000 values('1','author',0.0,0.0);
+insert into responsetime500000 values('2','tag',0.0,0.0);
+insert into responsetime500000 values('3','title',0.0,0.0);
+insert into responsetime500000 values('4','post',0.0,0.0);
+insert into responsetime500000 values('5','author_tag',0.0,0.0);
+insert into responsetime500000 values('6','author_title',0.0,0.0);
+insert into responsetime500000 values('7','author_post',0.0,0.0);
+insert into responsetime500000 values('8','tag_title',0.0,0.0);
+insert into responsetime500000 values('9','tag_post',0.0,0.0);
+insert into responsetime500000 values('10','title_post',0.0,0.0);
+insert into responsetime500000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime500000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime500000 values('13','author_title_post',0.0,0.0);
+insert into responsetime500000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime500000 values('15','author_tag_title_post',0.0,0.0);
+
+............................................................................................................................................80
+
+insert into responsetime600000 values('1','author',0.0,0.0);
+insert into responsetime600000 values('2','tag',0.0,0.0);
+insert into responsetime600000 values('3','title',0.0,0.0);
+insert into responsetime600000 values('4','post',0.0,0.0);
+insert into responsetime600000 values('5','author_tag',0.0,0.0);
+insert into responsetime600000 values('6','author_title',0.0,0.0);
+insert into responsetime600000 values('7','author_post',0.0,0.0);
+insert into responsetime600000 values('8','tag_title',0.0,0.0);
+insert into responsetime600000 values('9','tag_post',0.0,0.0);
+insert into responsetime600000 values('10','title_post',0.0,0.0);
+insert into responsetime600000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime600000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime600000 values('13','author_title_post',0.0,0.0);
+insert into responsetime600000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime600000 values('15','author_tag_title_post',0.0,0.0);
+
+.............................................................................................................................................81
+
+insert into responsetime700000 values('1','author',0.0,0.0);
+insert into responsetime700000 values('2','tag',0.0,0.0);
+insert into responsetime700000 values('3','title',0.0,0.0);
+insert into responsetime700000 values('4','post',0.0,0.0);
+insert into responsetime700000 values('5','author_tag',0.0,0.0);
+insert into responsetime700000 values('6','author_title',0.0,0.0);
+insert into responsetime700000 values('7','author_post',0.0,0.0);
+insert into responsetime700000 values('8','tag_title',0.0,0.0);
+insert into responsetime700000 values('9','tag_post',0.0,0.0);
+insert into responsetime700000 values('10','title_post',0.0,0.0);
+insert into responsetime700000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime700000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime700000 values('13','author_title_post',0.0,0.0);
+insert into responsetime700000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime700000 values('15','author_tag_title_post',0.0,0.0);
+
+..............................................................................................................................................82
+
+insert into responsetime800000 values('1','author',0.0,0.0);
+insert into responsetime800000 values('2','tag',0.0,0.0);
+insert into responsetime800000 values('3','title',0.0,0.0);
+insert into responsetime800000 values('4','post',0.0,0.0);
+insert into responsetime800000 values('5','author_tag',0.0,0.0);
+insert into responsetime800000 values('6','author_title',0.0,0.0);
+insert into responsetime800000 values('7','author_post',0.0,0.0);
+insert into responsetime800000 values('8','tag_title',0.0,0.0);
+insert into responsetime800000 values('9','tag_post',0.0,0.0);
+insert into responsetime800000 values('10','title_post',0.0,0.0);
+insert into responsetime800000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime800000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime800000 values('13','author_title_post',0.0,0.0);
+insert into responsetime800000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime800000 values('15','author_tag_title_post',0.0,0.0);
+
+..................................................................................................................................................83.
+
+insert into responsetime1000000 values('1','author',0.0,0.0);
+insert into responsetime1000000 values('2','tag',0.0,0.0);
+insert into responsetime1000000 values('3','title',0.0,0.0);
+insert into responsetime1000000 values('4','post',0.0,0.0);
+insert into responsetime1000000 values('5','author_tag',0.0,0.0);
+insert into responsetime1000000 values('6','author_title',0.0,0.0);
+insert into responsetime1000000 values('7','author_post',0.0,0.0);
+insert into responsetime1000000 values('8','tag_title',0.0,0.0);
+insert into responsetime1000000 values('9','tag_post',0.0,0.0);
+insert into responsetime1000000 values('10','title_post',0.0,0.0);
+insert into responsetime1000000 values('11','author_tag_title',0.0,0.0);
+insert into responsetime1000000 values('12','author_tag_post',0.0,0.0);
+insert into responsetime1000000 values('13','author_title_post',0.0,0.0);
+insert into responsetime1000000 values('14','tag_title_post',0.0,0.0);
+insert into responsetime1000000 values('15','author_tag_title_post',0.0,0.0);
+
+
+...................................................................................................................................................84
+
+create index index_fname
+on userdetails (fname)
+
+create index index_lname
+on userdetails (lname)
+
+create index index_title
+on postdetails (title)
+
+create index index_tag
+on tag (tagname)
+
+create index index_fname_lname
+on userdetails(fname,lname)
+
+...................................................................................................................................................85
+
+create table responsetimeindex
+(id varchar(10),
+serchtype varchar(30),
+restimesql float,
+restimemongo float)
+
+...................................................................................................................................................86
+
+alter procedure sp_responsetime_sqlindex
+(@id varchar(10),
+@restimesql float)
+as
+begin
+update responsetimeindex set restimesql=@restimesql where id=@id
+end
+
+..................................................................................................................................................87
+
+
+create procedure sp_responsetime_mongoindex
+(@id varchar(10),
+@restimemongo float)
+as
+begin
+update responsetimeindex set restimemongo=@restimemongo where id=@id
+end
+
+................................................................................................................................................88
+
+alter procedure sp_getresponsetimeindex
+as
+begin
+select s.serchtype,s.restimesql as sqlindex,s.restimemongo as mongoindex,r.restimesql as sql,r.restimemongo as mongo from responsetimeindex s,responsetime1000000 r where r.serchtype=s.serchtype
+end
+
+................................................................................................................................................89
+
+
