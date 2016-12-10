@@ -30,7 +30,7 @@ public partial class userhome : System.Web.UI.Page
         {
 
             displayimage();
-           loadGrid();
+            loadGrid();
             
         }
         else
@@ -302,14 +302,16 @@ public partial class userhome : System.Web.UI.Page
             }
             else if (post1.Length > 3000)
             {
-                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ss", "<script>alert('Post data should be greater than 3000 characters' )</script>", false);
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ss", "<script>alert('Post data should be Less than 3000 characters' )</script>", false);
             }
             else
             {
+                //for (int m = 0; m < 1000; m++)
+                //{
 
                     string post = post1;
                     string title = title1;
-                    
+
                     con.Open();
                     string username = Convert.ToString(Session["username"]);
                     DateTime date = DateTime.Now;
@@ -390,6 +392,7 @@ public partial class userhome : System.Web.UI.Page
                         Response.Redirect(ResolveUrl("userhome.aspx"));
                     }
                 }
+            //}
      
         }
         catch (Exception e1)
@@ -558,12 +561,13 @@ public partial class userhome : System.Web.UI.Page
 
                 DataSet ds12 = commoncode1(ds, dt);
 
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 1;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
 
             }
         }
@@ -597,12 +601,13 @@ public partial class userhome : System.Web.UI.Page
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(ds);
                 con.Close();
-                GridView1.DataSource = ds;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 2;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -636,12 +641,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+                
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 3;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -676,12 +682,14 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+              
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 4;
                 setreponsetime(id, time);
+
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -715,12 +723,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 5;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -754,12 +763,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 6;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -794,12 +804,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+              
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 7;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -834,12 +845,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 8;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -873,12 +885,14 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 9;
                 setreponsetime(id, time);
+
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -913,12 +927,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+                
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 10;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -953,12 +968,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 11;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -992,12 +1008,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 13;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -1032,12 +1049,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 12;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -1072,12 +1090,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+                
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 14;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -1113,12 +1132,13 @@ public partial class userhome : System.Web.UI.Page
                 da.Fill(ds);
                 con.Close();
                 DataSet ds12 = commoncode1(ds, dt);
-                GridView1.DataSource = ds12;
-                GridView1.DataBind();
+               
                 stopwatch.Stop();
                 double time = stopwatch.ElapsedMilliseconds / 1000d;
                 int id = 15;
                 setreponsetime(id, time);
+                GridView1.DataSource = ds12;
+                GridView1.DataBind();
             }
         }
         catch (Exception e1)
@@ -1212,14 +1232,14 @@ public partial class userhome : System.Web.UI.Page
     {
         //try
         //{
-        //    con.Open();
-        //    SqlCommand cmd22 = new SqlCommand("sp_responsetime_sql1000000", con);
-        //    cmd22.CommandText = "sp_responsetime_10000_noindex";
-        //    cmd22.CommandType = CommandType.StoredProcedure;
-        //    cmd22.Parameters.AddWithValue("@id", id);
-        //    cmd22.Parameters.AddWithValue("@restimesql", time);
-        //    int res = cmd22.ExecuteNonQuery();
-        //    con.Close();
+            con.Open();
+            SqlCommand cmd22 = new SqlCommand("sp_responsetime_index_70000", con);
+            cmd22.CommandText = "sp_responsetime_index_70000";
+            cmd22.CommandType = CommandType.StoredProcedure;
+            cmd22.Parameters.AddWithValue("@id", id);
+            cmd22.Parameters.AddWithValue("@restimeindex", time);
+            int res = cmd22.ExecuteNonQuery();
+            con.Close();
         //}
         //catch (Exception e1)
         //{

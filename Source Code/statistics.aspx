@@ -78,18 +78,13 @@ http://www.tooplate.com/view/2030-elegant
                    <td>
                      <asp:DropDownList ID="DropDownList1" runat="server">
                         <asp:ListItem Value="0">-------Select---------</asp:ListItem>
-                        <asp:ListItem Value="1">1 - 10,000</asp:ListItem>
-                        <asp:ListItem Value="2">1 - 100,000</asp:ListItem>
-                        <asp:ListItem Value="3">1 - 200,000</asp:ListItem>
-                        <asp:ListItem Value="4">1 - 300,000</asp:ListItem>
-                        <asp:ListItem Value="5">1 - 400,000</asp:ListItem>
-                        <asp:ListItem Value="6">1 - 500,000</asp:ListItem>
-                        <asp:ListItem Value="7">1 - 600,000</asp:ListItem>
-                        <asp:ListItem Value="8">1 - 700,000</asp:ListItem>
-                        <asp:ListItem Value="9">1 - 800,000</asp:ListItem>
-                        <asp:ListItem Value="10">1 - 900,000</asp:ListItem>
-                        <asp:ListItem Value="11">1 - 10,00,000</asp:ListItem>
-                        <asp:ListItem Value="12">Index on 1M Posts</asp:ListItem>
+                        <asp:ListItem Value="1"> 10,000 Posts</asp:ListItem>
+                        <asp:ListItem Value="2"> 20,000 Posts</asp:ListItem>
+                        <asp:ListItem Value="3"> 30,000 Posts</asp:ListItem>
+                        <asp:ListItem Value="4"> 40,000 Posts</asp:ListItem>
+                        <asp:ListItem Value="5"> 50,000 Posts</asp:ListItem>
+                        <asp:ListItem Value="6"> 60,000 Posts</asp:ListItem>
+                        <asp:ListItem Value="7"> 70,000 Posts</asp:ListItem>                                             
                     </asp:DropDownList>
 
                    </td>
@@ -123,7 +118,7 @@ http://www.tooplate.com/view/2030-elegant
                     <asp:Button ID="Button3" runat="server" Visible="false" OnClick="Button3_Click" Text="Submit" /></td>
             </tr>
              <tr><td colspan="3">
-        <asp:Label ID="Label7" runat="server" Visible="false" Text="Label"></asp:Label></td></tr>
+                <asp:Label ID="Label7" runat="server" Visible="false" Text="Label"></asp:Label></td></tr>
            
   </table>
 		    	
